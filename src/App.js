@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from "react-router-dom";
+import Top from './components/Top';
+import population from './components/population';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+        <ul>
+          <li><Link to="/">トップ</Link></li>
+          <li><Link to="/population">人口</Link></li>
+        </ul>
+        <Route path="/" exact component={Top} />
+        <Route path="/population/" exact component={population} />
+    </Router>
   );
 }
 
