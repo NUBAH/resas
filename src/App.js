@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Top from './components/Top';
 import population from './components/population';
+import axios from 'axios'
 
 function App() {
   return (
