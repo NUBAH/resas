@@ -21,10 +21,8 @@ export default class App extends React.Component{
   componentDidMount() {
     axios.get(this.state.prefUrl, {headers: this.state.headers})
       .then(res => {
-        const prefCode = res.prefCode;
-        const prefName = res.prefName;
-        this.setState({prefCode, prefName});
-        console.log(res);
+        const prefList = res.data.result;
+        this.setState({prefList})
       })
   }
 
@@ -39,14 +37,20 @@ export default class App extends React.Component{
             <Route path="/" exact component={Top} />
             <Route path="/population/" exact component={population} />
         </Router>
-        <header>
           <h1>都道府県人口構成</h1>
-          <ul>
-            <li key={this.state.prefCode}>
-              {this.state.prefName}
-            </li>
-          </ul>
-        </header>
+            <div>
+            { this.state.prefList
+               ? this.state.prefList.map(listItem => {
+                return (
+                  <label>
+                    <input type="checkbox" key={listItem.prefCode} value={listItem.prefName}/>
+                    {listItem.prefName}
+                  </label>
+                )
+               })
+               : "Loading...."
+            }
+            </div>
       </div>
     );
   }
