@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -8,25 +8,33 @@ import Top from './components/Top';
 import population from './components/population';
 import axios from 'axios';
 
-export default class App extends React.Component{
-  constructor(props) {
-    super();
-    this.state = {
-      headers: {
-        'x-api-key': process.env.REACT_APP_X_API_KEY
-      },
-      prefUrl: 'https://opendata.resas-portal.go.jp/api/v1/prefectures'
-    }
-  }
-  componentDidMount() {
-    axios.get(this.state.prefUrl, {headers: this.state.headers})
+const App = props => {
+  const headers= {
+    'x-api-key': process.env.REACT_APP_X_API_KEY
+  };
+  const prefectureUrl= 'https://opendata.resas-portal.go.jp/api/v1/prefectures';
+  const populationUrl= 'https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode=';
+
+  const [prefList, setPrefList] = useState([]);
+  const [year, setYear] = useState([]);
+
+  useEffect(() => {
+    axios.get(prefectureUrl, {headers: headers})
       .then(res => {
-        const prefList = res.data.result;
-        this.setState({prefList})
+        setPrefList(res.data.result);
+      })
+
+  }, []);
+  
+
+  const handleClick = prefCode =>  {
+    axios.get(populationUrl+prefCode, {headers: headers})
+      .then(response => {
+        console.log(response);
+        setYear(response.data.result.data);
       })
   }
 
-  render() {
     return (
       <div>
         <Router>
@@ -36,23 +44,30 @@ export default class App extends React.Component{
             </ul>
             <Route path="/" exact component={Top} />
             <Route path="/population/" exact component={population} />
-        </Router>
           <h1>都道府県人口構成</h1>
             <div>
-            { this.state.prefList
-               ? this.state.prefList.map(listItem => {
-                return (
-                  <label>
-                    <input type="checkbox" key={listItem.prefCode} value={listItem.prefName}/>
-                    {listItem.prefName}
-                  </label>
+              {prefList.map((listItem, index) => (
+                <label key={index}>
+                  <input 
+                    type="checkbox" 
+                    onChange={() => handleClick(listItem.prefCode)}
+                    />
+                  {listItem.prefName}
+                </label>
                 )
-               })
-               : "Loading...."
+              )
             }
             </div>
+            <div>
+              {year.map((yearItem, index) => (
+                <label key={index}>
+                  <p>{yearItem.label}</p>
+                </label>
+              ))}
+            </div>
+        </Router>
       </div>
     );
-  }
 }
 
+export default App;
