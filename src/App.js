@@ -17,6 +17,7 @@ const App = props => {
 
   const [prefList, setPrefList] = useState([]);
   const [year, setYear] = useState([]);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     axios.get(prefectureUrl, {headers: headers})
@@ -26,6 +27,23 @@ const App = props => {
 
   }, []);
   
+  useEffect(() => {
+    let rowCount = 0;
+    if (year.length > 0) rowCount = year[0].data.length;
+    let newRows = [];
+    for(var x = rowCount - 1; x >= 0; x--) {
+      newRows.push(
+        <tr>
+          <td>{year[0].data[x].year}</td>
+          <td>{year[0].data[x].value} - {x > 0 ? (year[0].data[x].value / year[0].data[x-1].value * 10).toFixed(1) : ""}</td>
+          <td>{year[1].data[x].value} - {year[1].data[x].rate}</td>
+          <td>{year[2].data[x].value} - {year[2].data[x].rate}</td>
+          <td>{year[3].data[x].value} - {year[3].data[x].rate}</td>
+        </tr>
+      );
+    }
+    setRows(newRows);
+  }, [year]);
 
   const handleClick = prefCode =>  {
     axios.get(populationUrl+prefCode, {headers: headers})
@@ -59,11 +77,19 @@ const App = props => {
             }
             </div>
             <div>
-              {year.map((yearItem, index) => (
-                <label key={index}>
-                  <p>{yearItem.label}</p>
-                </label>
-              ))}
+              <table>
+                <thead>
+                <tr>
+                  <th>年</th>
+                {year.map((yearItem) => (
+                  <th>{yearItem.label}</th>
+                ))}
+                </tr>
+                </thead>
+                <tbody>
+                  {rows}
+                </tbody>
+              </table>
             </div>
         </Router>
       </div>
