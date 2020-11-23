@@ -2,6 +2,20 @@ import React, {useState, useEffect} from 'react';
 import './App.css'
 import axios from 'axios';
 
+const TableRow = (
+  { x, year, data } = { x, year, data }
+) => {
+  return (
+    <tr className="table-row">
+      <td className="year-column">{year[0].data[x].year}</td>
+      <td>{year[0].data[x].value} - ({x > 0 ? (year[0].data[x].value / year[0].data[x-1].value * 10).toFixed(1) : ""})</td>
+      <td>{year[1].data[x].value} - ({year[1].data[x].rate})</td>
+      <td>{year[2].data[x].value} - ({year[2].data[x].rate})</td>
+      <td>{year[3].data[x].value} - ({year[3].data[x].rate})</td>
+    </tr>
+  );
+}
+
 const App = props => {
   const headers= {
     'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -27,13 +41,7 @@ const App = props => {
     let newRows = [];
     for(var x = rowCount - 1; x >= 0; x--) {
       newRows.push(
-        <tr className="table-row">
-          <td className="year-column">{year[0].data[x].year}</td>
-          <td>{year[0].data[x].value} - ({x > 0 ? (year[0].data[x].value / year[0].data[x-1].value * 10).toFixed(1) : ""})</td>
-          <td>{year[1].data[x].value} - ({year[1].data[x].rate})</td>
-          <td>{year[2].data[x].value} - ({year[2].data[x].rate})</td>
-          <td>{year[3].data[x].value} - ({year[3].data[x].rate})</td>
-        </tr>
+        <TableRow x={x} year={year} data={year.data} />
       );
     }
     setRows(newRows);
@@ -46,43 +54,43 @@ const App = props => {
       })
   }
 
-    return (
-      <div className="App">
-        <div className="App-header">
-          <h1>都道府県人口構成</h1>
-        </div>
-        <div className="App-checkbox">
-          {prefList.map((listItem, index) => (
-            <label className="checkbox-label" key={index}>
-              <input 
-                className="checkbox-button"
-                type="checkbox" 
-                onChange={() => handleClick(listItem.prefCode)}
-                />
-              {listItem.prefName}
-            </label>
-            )
-          )
-        }
-        </div>
-        <div className="App-table">
-          <h3>人口構成表</h3>
-          <table className="g-table">
-            <thead>
-              <tr className="table-row">
-                <th>年</th>
-                {year.map((yearItem) => (
-                  <th>{yearItem.label} - (割合)</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows}
-            </tbody>
-          </table>
-        </div>
+  return (
+    <div className="App">
+      <div className="App-header">
+        <h1>都道府県人口構成</h1>
       </div>
-    );
+      <div className="App-checkbox">
+        {prefList.map((listItem, index) => (
+          <label className="checkbox-label" key={index}>
+            <input 
+              className="checkbox-button"
+              type="checkbox" 
+              onChange={() => handleClick(listItem.prefCode)}
+              />
+            {listItem.prefName}
+          </label>
+          )
+        )
+      }
+      </div>
+      <div className="App-table">
+        <h3>人口構成表</h3>
+        <table className="g-table">
+          <thead>
+            <tr className="table-row">
+              <th>年</th>
+              {year.map((yearItem) => (
+                <th>{yearItem.label} - (割合)</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 export default App;
