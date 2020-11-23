@@ -1,4 +1,21 @@
-# Getting Started with Create React App
+#都道府県の人口構成を年代降順の表に表示するSPA
+
+##要件
+・React(もしくは Angular/Vueなど JavaScriptのフレームワークベース)でSPAを構築すること
+・RESAS（地域経済分析システム）APIの「都道府県一覧」からAPIを取得する
+・APIレスポンスから都道府県一覧のチェックボックスを動的に生成する
+・都道府県にチェックを入れると、RESAS APIから選択された都道府県の「人口構成」を取得する
+・人口構成APIレスポンスから、
+    ・西暦を降順に並び替え
+    ・各ラベルを列として表示
+    ・総人口については増加率（前回データ（５年前データ）から増加率）を表示
+・Google Chromeで正常に動作すること
+
+##参考
+・RESAS API -> https://opendata.resas-portal.go.jp/
+・RESAS API仕様書 -> https://opendata.resas-portal.go.jp/docs/api/v1/index.html
+・React.js -> https://reactjs.org/
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
