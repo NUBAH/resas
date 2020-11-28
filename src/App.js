@@ -5,13 +5,22 @@ import axios from 'axios';
 const TableRow = (
   { x, year, data } = { x, year, data }
 ) => {
+  const [col, setCol] = useState([]);
+  
+  useEffect(() => {
+    let newColumn = [];
+    for(var i = 0; i < year.length; i++){
+      newColumn.push(
+        <td>{year[i].data[x].value} - ({x > 0 ? (year[i].data[x].value / year[i].data[x-1].value * 10).toFixed(1) : "-"})</td>
+      );
+    }
+    setCol(newColumn);
+  }, [year]);
+
   return (
     <tr className="table-row">
       <td className="year-column">{year[0].data[x].year}</td>
-      <td>{year[0].data[x].value} - ({x > 0 ? (year[0].data[x].value / year[0].data[x-1].value * 10).toFixed(1) : ""})</td>
-      <td>{year[1].data[x].value} - ({year[1].data[x].rate})</td>
-      <td>{year[2].data[x].value} - ({year[2].data[x].rate})</td>
-      <td>{year[3].data[x].value} - ({year[3].data[x].rate})</td>
+      {col}
     </tr>
   );
 }
@@ -51,6 +60,7 @@ const App = props => {
     axios.get(populationUrl+prefCode, {headers: headers})
       .then(response => {
         setYear(response.data.result.data);
+        console.log(response);
       })
   }
 
